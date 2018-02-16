@@ -1,11 +1,15 @@
 var questions=[];
-questions.push({quest:"Which of these songs is from the movie Mulan?", a1:"I'll Make a Man Out of You", a2:"I Just Can't Wait to be King", a3:"Colors of the Wind",a4:"Be Our Guest",corrAns:"I'll Make a Man Out of You"});
-questions.push({quest:"Which of these characters is not from the movie Tarzan?", a1:"Jane", a2:"Clayton", a3:"Turk",a4:"Gaston",corrAns:"Gaston"});
+questions.push({quest:"Which of these songs is from the movie 'Mulan'?", a1:"I'll Make a Man Out of You", a2:"I Just Can't Wait to be King", a3:"Colors of the Wind",a4:"Be Our Guest",corrAns:"I'll Make a Man Out of You"});
+questions.push({quest:"Which of these characters is not from the movie 'Tarzan'?", a1:"Jane", a2:"Clayton", a3:"Turk",a4:"Gaston",corrAns:"Gaston"});
+questions.push({quest:"What book is the movie 'Treasure Planet' based on?", a1:"Moneyball", a2:"Robinson Crusoe", a3:"Treasure Island",a4:"The Martian Chronicles",corrAns:"Treasure Island"});
+questions.push({quest:"Which of these movies was not nominated for Best Picture at the Academy Awards?", a1:"Toy Story 3", a2:"Beauty and the Beast (1991)", a3:"The Lion King",a4:"Up",corrAns:"The Lion King"});
 var count=0;
 var time=30;
+var timer=0;
 var inter=0;
 var rightAns=0;
 var wrongAns=0;
+var unAns=0;
 $(".button").click(evaluate);
 $("#reset-button").click(function(){
     reset();
@@ -16,7 +20,7 @@ function evaluate()
     var selection=$(this).text();
     if(selection==questions[count].corrAns)
     {
-        $("#message").text("Correct");
+        $("#message").text("Correct!");
         rightAns++;
     }
     else
@@ -26,20 +30,23 @@ function evaluate()
     }
     time=30;
     clearInterval(inter);
+    clearTimeout(timer);
     count++;
-    setTimeout(next,3000);
+    timer=setTimeout(next,3000);
 }
 function timeKeeper()
 {
     time--;
-    $("#time").text(time);
+    $("#time").text("Time left: "+time);
 }
 function timeOut()
 {
     clearInterval(inter);
     $("#message").text("Time's up! The correct answer was: "+questions[count].corrAns);
-    setTimeout(next,3000);
+    clearTimeout(timer);
+    timer=setTimeout(next,3000);
     time=30;
+    unAns++;
     count++;
 }
 function next()
@@ -58,7 +65,7 @@ function next()
         $("#btn3").text(questions[count].a3);
         $("#btn4").text(questions[count].a4);
         inter=setInterval(timeKeeper,1000);
-        setTimeout(timeOut,30000);
+        timer=setTimeout(timeOut,30000);
     }
 }
 function gameOver()
@@ -67,6 +74,8 @@ function gameOver()
     $("#answer-holder").append($("<div>").text("Correct Answers: "+rightAns));
     $("#answer-holder").append($("<br>"));
     $("#answer-holder").append($("<div>").text("Incorrect Answers: "+wrongAns));
+    $("#answer-holder").append($("<br>"));
+    $("#answer-holder").append($("<div>").text("Unanswered Questions: "+unAns));
     $(".button").hide();
     $("#reset-button").show();
     $("#reset-button").text("Play Again?");
@@ -80,5 +89,6 @@ function reset()
     $("#answer-holder").empty();
     $(".button").hide();
     clearInterval(inter);
+    clearTimeout(timer);
 }
 reset();
